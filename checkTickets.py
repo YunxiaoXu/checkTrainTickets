@@ -54,7 +54,7 @@ def getInfo():
         opts, args = getopt.getopt(
             sys.argv[1:],
             "hDGTKZf:t:d:",
-            ["help","Bullet","Highspeed","Express","Fast","Direct","from","to","date"]
+            ["help","Bullet","Highspeed","Express","Fast","Direct","from=","to=","date="]
         )
     except getopt.GetoptError,e:
         print(str(e))
@@ -84,3 +84,11 @@ def getInfo():
 
 if __name__ == "__main__":
     getInfo()
+    print "动车：", dongche
+    print "高铁：", gaotie
+    print "特快：", tekuai
+    print "快速：", kuaisu
+    print "直达：", zhida
+    print "出发：", from_station
+    print "抵达：", to_station
+    print "日期：", date
