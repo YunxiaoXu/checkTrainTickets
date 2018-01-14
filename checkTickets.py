@@ -23,6 +23,7 @@ Example:
 """
 import sys
 import getopt
+import requests
 
 dongche         = False
 gaotie          = False
@@ -31,7 +32,7 @@ kuaisu          = False
 zhida           = False
 from_station    = ""
 to_station      = ""
-date            = ""
+date            = "" 
 
 def usage():
     print(__doc__)
@@ -81,6 +82,9 @@ def getInfo():
             date = a
         else:
             assert False, "Unhandled Option"
+
+    if not (dongche or gaotie or tekuai or kuaisu or zhida):
+        dongche = gaotie = tekuai = kuaisu = zhida = True
 
 if __name__ == "__main__":
     getInfo()
