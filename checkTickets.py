@@ -24,7 +24,9 @@ Example:
 import sys
 import getopt
 import requests
+import urllib3
 import platform
+import updateStation
 
 dongche         = False
 gaotie          = False
@@ -35,6 +37,7 @@ from_station    = ""
 to_station      = ""
 date            = "" 
 new_coding      = "gbk" if platform.system()=="Windows" else "utf-8"
+stations        = updateStation.station_dict()
 
 def usage():
     print(__doc__).encode(new_coding)
@@ -77,9 +80,9 @@ def getInfo():
         elif o in ("-Z", "--Direct"):
             zhida = True
         elif o in ("-f", "--from"):
-            from_station = a.decode(new_coding)
+            from_station = stations.get(a.decode(new_coding)) or None
         elif o in ("-t", "--to"):
-            to_station = a.decode(new_coding)
+            to_station = stations.get(a.decode(new_coding)) or None
         elif o in ("-d", "--date"):
             date = a.decode(new_coding)
         else:
@@ -87,6 +90,10 @@ def getInfo():
 
     if not (dongche or gaotie or tekuai or kuaisu or zhida):
         dongche = gaotie = tekuai = kuaisu = zhida = True
+
+    if not from_station or not to_station:
+        print "Station not available."
+        sys.exit(0)
 
 def getData():
     global from_station
@@ -103,18 +110,11 @@ def getData():
 
     request_url = url_template.format(from_station=from_station, to_station=to_station, date=date)
 
-    data = requests.get(request_url)
+    data = requests.get(request_url, verify=False)
     
     print data.text.encode(new_coding)
 
 if __name__ == "__main__":
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     getInfo()
-    print u"动车：{}".format(dongche).encode(new_coding)
-    print u"高铁：{}".format(gaotie).encode(new_coding)
-    print u"特快：{}".format(tekuai).encode(new_coding)
-    print u"快速：{}".format(kuaisu).encode(new_coding)
-    print u"直达：{}".format(zhida).encode(new_coding)
-    print u"出发：{}".format(from_station).encode(new_coding)
-    print u"抵达：{}".format(to_station).encode(new_coding)
-    print u"日期：{}".format(date).encode(new_coding)
     getData()
