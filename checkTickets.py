@@ -38,6 +38,7 @@ to_station      = ""
 date            = "" 
 new_coding      = "gbk" if platform.system()=="Windows" else "utf-8"
 stations        = updateStation.station_dict()
+istations       = {v:k for k,v in stations.items()}
 
 def usage():
     print(__doc__).encode(new_coding)
@@ -99,6 +100,8 @@ def getData():
     global from_station
     global to_station
     global date
+    global istations
+    global new_coding
 
     url_template = (
         "https://kyfw.12306.cn/otn/leftTicket/queryZ?"
@@ -111,8 +114,31 @@ def getData():
     request_url = url_template.format(from_station=from_station, to_station=to_station, date=date)
 
     data = requests.get(request_url, verify=False)
-    
-    print data.text.encode(new_coding)
+    raw_trains = data.json()['data']['result']
+    for raw_train in raw_trains:
+        train = raw_train.split('|')
+        train_no = train[3]
+        from_station_code = train[6]
+        to_station_code = train[7]
+        start_time = train[8]
+        arrive_time = train[9]
+        time_duration = train[10]
+        business_class_seat = train[32] or '--'
+        first_class_seat = train[31] or '--'
+        second_class_seat = train[30] or '--'
+        advanced_soft_sleep = train[21] or '--'
+        soft_sleep = train[23] or '--'
+        hard_sleep = train[28] or '--'
+        soft_seat = train[24] or '--'
+        hard_seat = train[29] or '--'
+        no_seat = train[26] or '--'
+        from_station_name = istations.get(from_station_code)
+        to_station_name = istations.get(to_station_code)
+        print u"{no: <6} {f} {t} {st},{at} {td} {y} {e}".format(\
+                no=train_no, f=ch(from_station_name,8), t=ch(to_station_name,8), st=start_time,
+                at=arrive_time, td=time_duration, y=ch(first_class_seat,3), e=ch(second_class_seat,3)\
+                ).encode(new_coding)
+
 
 if __name__ == "__main__":
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
