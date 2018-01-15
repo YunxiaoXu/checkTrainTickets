@@ -28,11 +28,8 @@ import urllib3
 import platform
 import updateStation
 
-dongche         = False
-gaotie          = False
-tekuai          = False
-kuaisu          = False
-zhida           = False
+category        = []
+All             = False
 from_station    = ""
 to_station      = ""
 date            = "" 
@@ -55,11 +52,8 @@ def ch(ustr, slen, filling=' '):
     return ustr + filling*flen
 
 def getInfo():
-    global dongche
-    global gaotie
-    global tekuai
-    global kuaisu
-    global zhida
+    global category
+    global All
     global from_station
     global to_station
     global date
@@ -81,15 +75,15 @@ def getInfo():
         if o in ("-h", "--help"):
             usage()
         elif o in ("-D", "--Bullet"):
-            dongche = True
+            category.append(u'D')
         elif o in ("-G", "--Highspeed"):
-            gaotie = True
+            category.append(u'G')
         elif o in ("-T", "--Express"):
-            tekuai = True
+            category.append(u'T')
         elif o in ("-K", "--Fast"):
-            kuaisu = True
+            category.append(u'K')
         elif o in ("-Z", "--Direct"):
-            zhida = True
+            category.append(u'Z')
         elif o in ("-f", "--from"):
             from_station = stations.get(a.decode(new_coding)) or None
         elif o in ("-t", "--to"):
@@ -99,14 +93,16 @@ def getInfo():
         else:
             assert False, "Unhandled Option"
 
-    if not (dongche or gaotie or tekuai or kuaisu or zhida):
-        dongche = gaotie = tekuai = kuaisu = zhida = True
+    if not category:
+        All = True
 
     if not from_station or not to_station:
         print "Station not available."
         sys.exit(0)
 
 def getData():
+    global cattegory
+    global All
     global from_station
     global to_station
     global date
@@ -154,6 +150,9 @@ def getData():
         no_seat = train[26] or '--'
         from_station_name = istations.get(from_station_code)
         to_station_name = istations.get(to_station_code)
+        if not All:
+            if not (train_no[0] in category):
+                continue
         table_template += u"\n{no} {f} {t} {st} {at} {td} {y} {e}".format(
                 no=ch(train_no,6),
                 f=ch(from_station_name,8),
