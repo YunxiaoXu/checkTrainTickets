@@ -120,7 +120,11 @@ def getData():
     request_url = url_template.format(from_station=from_station, to_station=to_station, date=date)
 
     data = requests.get(request_url, verify=False)
-    raw_trains = data.json()['data']['result']
+    try:
+        raw_trains = data.json()['data']['result']
+    except:
+        print "Connection Error"
+        sys.exit(0)
     table_template = u"{} {} {} {} {} {} {} {}".format(
             ch(u'车次',6),
             ch(u'出发站',8),
