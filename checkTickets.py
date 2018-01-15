@@ -44,6 +44,16 @@ def usage():
     print(__doc__).encode(new_coding)
     sys.exit(0)
 
+def ch(ustr, slen, filling=' '):
+    ulen = 0
+    for ubyte in ustr:
+        if u'\u4e00' <= ubyte <= u'\u9fa5':
+            ulen += 2
+        else:
+            ulen += 1
+    flen = max(0, slen-ulen)
+    return ustr + filling*flen
+
 def getInfo():
     global dongche
     global gaotie
@@ -115,6 +125,16 @@ def getData():
 
     data = requests.get(request_url, verify=False)
     raw_trains = data.json()['data']['result']
+    table_template = u"{} {} {} {} {} {} {} {}".format(
+            ch(u'车次',6),
+            ch(u'出发站',8),
+            ch(u'到达站',8),
+            ch(u'出发时间',8),
+            ch(u'到达时间',8),
+            ch(u'历时',6),
+            ch(u'一等座',6),
+            ch(u'二等座',6)
+        )
     for raw_train in raw_trains:
         train = raw_train.split('|')
         train_no = train[3]
@@ -134,10 +154,17 @@ def getData():
         no_seat = train[26] or '--'
         from_station_name = istations.get(from_station_code)
         to_station_name = istations.get(to_station_code)
-        print u"{no: <6} {f} {t} {st},{at} {td} {y} {e}".format(\
-                no=train_no, f=ch(from_station_name,8), t=ch(to_station_name,8), st=start_time,
-                at=arrive_time, td=time_duration, y=ch(first_class_seat,3), e=ch(second_class_seat,3)\
-                ).encode(new_coding)
+        table_template += u"\n{no} {f} {t} {st} {at} {td} {y} {e}".format(
+                no=ch(train_no,6),
+                f=ch(from_station_name,8),
+                t=ch(to_station_name,8),
+                st=ch(start_time,8),
+                at=ch(arrive_time,8),
+                td=ch(time_duration,6),
+                y=ch(first_class_seat,6),
+                e=ch(second_class_seat,6)
+            )
+    print table_template.encode(new_coding)
 
 
 if __name__ == "__main__":
