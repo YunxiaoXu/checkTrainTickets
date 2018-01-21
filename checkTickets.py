@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #coding: utf-8
 u"""
 Train Tickets Checking Tool
@@ -24,9 +24,9 @@ Example:
 import sys
 import getopt
 import requests
-import urllib3
 import platform
 import updateStation
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 category        = []
 All             = False
@@ -171,6 +171,6 @@ def getData():
 
 
 if __name__ == "__main__":
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     getInfo()
     getData()

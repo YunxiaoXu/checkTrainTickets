@@ -2,12 +2,12 @@
 
 import re
 import requests
-import urllib3
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 pattern = u"([\u4e00-\u9fa5]+)\|([A-Z]+)"
 
 def station_dict():
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     webpage_url = "https://kyfw.12306.cn/otn/leftTicket/init"
     webpage = requests.get(webpage_url)
     webpage_text = webpage.text
