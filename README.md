@@ -1,11 +1,8 @@
 # Train Tickets Checking Tool
 
-**Check Train Tickets
-
-The first project.
-
-Check the train tickets left in China.
 **
+
+Check the train tickets left in China.**
 
 ## Usage:
     ./checkTickets.py [-dgktz] <date> <to> <date>
