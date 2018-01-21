@@ -17,5 +17,6 @@
     -d --date                Departure Date
 
 ## Example:
-    ./checkTickets.py -D -f 上海 -t 北京 -d 2018-01-13
-    ./checkTickets.py --Bullet --from=上海 --to=北京 --date=2018-01-03
+    ./checkTickets.py -D -f 涓婃捣 -t 鍖椾含 -d 2018-01-13
+    ./checkTickets.py --Bullet --from=涓婃捣 --to=鍖椾含 --date=2018-01-03
+
